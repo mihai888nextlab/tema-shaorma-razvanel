@@ -16,7 +16,7 @@ export default function Home() {
             Intra ca si client
           </button>
           <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-1/2 h-14 mt-5">
-            Intra ca si bucatar
+            <a href="/login/bucatar">Intra ca si bucatar</a>
           </button>
         </div>
         <div></div>
