@@ -15,7 +15,21 @@ const userSchema = new Schema({
   },
 });
 
+const ingredientSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+});
+
 const userModel =
   models.temarazvan_users || model("temarazvan_users", userSchema);
+const ingredientModel =
+  models.temarazvan_ingredients ||
+  model("temarazvan_ingredients", ingredientSchema);
 
-export { userModel };
+export { userModel, ingredientModel };

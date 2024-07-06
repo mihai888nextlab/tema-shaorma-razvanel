@@ -5,4 +5,10 @@ interface User {
   secret: string;
 }
 
-export type { User };
+interface Ingredient {
+  _id: string;
+  name: string;
+  price: number;
+}
+
+export type { User, Ingredient };
