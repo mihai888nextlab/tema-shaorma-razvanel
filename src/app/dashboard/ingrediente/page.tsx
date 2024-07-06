@@ -11,6 +11,7 @@ export default function Dashboard() {
   const user = useUser();
 
   const [addIngredient, setAddIngredient] = useState(false);
+  const [editIngredientId, setEditIngredientId] = useState("");
 
   if (user.loading) {
     return <Loading />;
@@ -59,10 +60,23 @@ export default function Dashboard() {
                     <td className="text-center p-2">{ing.name}</td>
                     <td className="text-center p-2">{ing.price}</td>
                     <td className="text-center p-2">
-                      <button className="px-3 py-1 bg-blue-500 text-white rounded-md">
+                      <button
+                        className="px-3 py-1 bg-blue-500 text-white rounded-md"
+                        onClick={() => setEditIngredientId(ing._id)}
+                      >
                         Editeaza
                       </button>
-                      <button className="px-3 py-1 bg-red-500 text-white rounded-md ml-2">
+                      {editIngredientId && (
+                        <AddIngredientModal
+                          close={() => setEditIngredientId("")}
+                          edit
+                          id={editIngredientId}
+                        />
+                      )}
+                      <button
+                        className="px-3 py-1 bg-red-500 text-white rounded-md ml-2"
+                        onClick={() => user.deleteIngredient(ing._id)}
+                      >
                         Sterge
                       </button>
                     </td>

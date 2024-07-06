@@ -6,12 +6,18 @@ import { usePathname, useRouter } from "next/navigation";
 import getUserInfo from "../api/auth/getUserInfo";
 import { set } from "mongoose";
 import getIngredients from "../api/ingredients/getIngredients";
+import addIngredient from "../api/ingredients/addIngredient";
+import deleteIngredient from "../api/ingredients/deleteIngredient";
+import editIngredient from "../api/ingredients/editIngredient";
 
 interface ContextType {
   loading: boolean;
   user: User | null;
   ingredients: Ingredient[];
   getIngredients: () => void;
+  addIngredient: (name: string, price: number) => Promise<void>;
+  deleteIngredient: (id: string) => Promise<void>;
+  editIngredient: (id: string, name: string, price: number) => Promise<void>;
 }
 
 const UserContext = createContext<ContextType>({} as ContextType);
@@ -31,6 +37,27 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setIngredients(JSON.parse(ingredients));
+  };
+
+  const addIngredientFct = async (name: string, price: number) => {
+    setLoading(true);
+    await addIngredient(name, price);
+    await getIngereientsFct();
+    setLoading(false);
+  };
+
+  const deleteIngredientFct = async (id: string) => {
+    setLoading(true);
+    await deleteIngredient(id);
+    await getIngereientsFct();
+    setLoading(false);
+  };
+
+  const editIngredientFct = async (id: string, name: string, price: number) => {
+    setLoading(true);
+    await editIngredient(id, name, price);
+    await getIngereientsFct();
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -54,7 +81,15 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <UserContext.Provider
-      value={{ loading, user, ingredients, getIngredients: getIngereientsFct }}
+      value={{
+        loading,
+        user,
+        ingredients,
+        getIngredients: getIngereientsFct,
+        addIngredient: addIngredientFct,
+        deleteIngredient: deleteIngredientFct,
+        editIngredient: editIngredientFct,
+      }}
     >
       {children}
     </UserContext.Provider>
