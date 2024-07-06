@@ -1,9 +1,9 @@
 "use client";
 
-import DashboardHeader from "../components/DashboardHeader";
-import DashboardSidebar from "../components/DashboardSIdebar";
-import Loading from "../components/Loading";
-import { useUser } from "../hooks/UserContext";
+import DashboardHeader from "@/app/components/DashboardHeader";
+import DashboardSidebar from "@/app/components/DashboardSIdebar";
+import Loading from "@/app/components/Loading";
+import { useUser } from "@/app/hooks/UserContext";
 
 export default function Dashboard() {
   const user = useUser();
