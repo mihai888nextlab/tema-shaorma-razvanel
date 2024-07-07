@@ -3,16 +3,14 @@
 import DashboardHeader from "@/app/components/DashboardHeader";
 import DashboardSidebar from "@/app/components/DashboardSIdebar";
 import Loading from "@/app/components/Loading";
-import AddIngredientModal from "@/app/components/modals/AddIngredientModal";
+import AddShawormaModal from "@/app/components/modals/AddShawormaModal";
 import { useUser } from "@/app/hooks/UserContext";
-import { Ingredient } from "@/app/types";
 import { useState } from "react";
 
 export default function Dashboard() {
   const user = useUser();
 
-  const [addIngredient, setAddIngredient] = useState(false);
-  const [editIngredient, setEditIngredient] = useState<Ingredient | null>(null);
+  const [addShaorma, setAddShaorma] = useState(false);
 
   if (user.loading) {
     return <Loading />;
@@ -27,12 +25,12 @@ export default function Dashboard() {
           <div className="flex justify-end">
             <button
               className="px-5 py-3 rounded-xl text-white font-semibold bg-blue-500 text-xl"
-              onClick={() => setAddIngredient(true)}
+              onClick={() => setAddShaorma(true)}
             >
-              Adauga ingredient
+              Adauga shaworma de vanzare
             </button>
-            {addIngredient && (
-              <AddIngredientModal close={() => setAddIngredient(false)} />
+            {addShaorma && (
+              <AddShawormaModal close={() => setAddShaorma(false)} />
             )}
           </div>
 
@@ -63,11 +61,11 @@ export default function Dashboard() {
                     <td className="text-center p-2">
                       <button
                         className="px-3 py-1 bg-blue-500 text-white rounded-md"
-                        onClick={() => setEditIngredient(ing)}
+                        // onClick={() => setEditIngredient(ing)}
                       >
                         Editeaza
                       </button>
-                      {editIngredient && (
+                      {/* {editIngredient && (
                         <AddIngredientModal
                           close={() => setEditIngredient(null)}
                           edit
@@ -75,7 +73,7 @@ export default function Dashboard() {
                           name={editIngredient.name}
                           price={editIngredient.price}
                         />
-                      )}
+                      )} */}
                       <button
                         className="px-3 py-1 bg-red-500 text-white rounded-md ml-2"
                         onClick={() => user.deleteIngredient(ing._id)}

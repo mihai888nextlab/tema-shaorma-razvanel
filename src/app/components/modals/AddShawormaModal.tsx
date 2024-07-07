@@ -2,39 +2,39 @@
 
 import { useUser } from "@/app/hooks/UserContext";
 import { useState } from "react";
+import MultiSelectDropdown from "../MultiselectDropdown";
 
 interface Props {
   close: () => void;
   edit?: boolean;
   id?: string;
   name?: string;
-  price?: number;
 }
 
-export default function AddIngredientModal(props: Props) {
+export default function AddShawormaModal(props: Props) {
   const user = useUser();
 
   const [name, setName] = useState(props.name || "");
-  const [price, setPrice] = useState(props.price || 0);
 
   const onCLose = () => {
     setName("");
-    setPrice(0);
-
     props.close();
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name || price === 0) {
+    const formDatas = new FormData(e.currentTarget);
+    const ingredients = formDatas.getAll("ingredients");
+
+    if (!name || ingredients.length === 0) {
       return;
     }
 
     if (!props.edit) {
-      await user.addIngredient(name, price);
+      await user.addShaworma(name, ingredients as string[]);
     } else {
-      await user.editIngredient(props.id!, name, price);
+      //await user.editIngredient(props.id!, name, price);
     }
 
     onCLose();
@@ -44,9 +44,9 @@ export default function AddIngredientModal(props: Props) {
     <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-10 rounded-lg w-1/2">
         {!props.edit ? (
-          <h2 className="text-2xl font-bold">Adauga Ingredient</h2>
+          <h2 className="text-2xl font-bold">Adauga Shaworma</h2>
         ) : (
-          <h2 className="text-2xl font-bold">Editeaza Ingredient</h2>
+          <h2 className="text-2xl font-bold">Editeaza Shaworma</h2>
         )}
         <form className="mt-5" onSubmit={onSubmit}>
           <div className="mb-5">
@@ -65,16 +65,14 @@ export default function AddIngredientModal(props: Props) {
           </div>
           <div className="mb-5">
             <label
-              htmlFor="quantity"
+              htmlFor="ingredients"
               className="block text-sm font-medium text-gray-700"
             >
-              Pret
+              Ingrediente
             </label>
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(parseInt(e.target.value))}
-              className="mt-1 p-3 border-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            <MultiSelectDropdown
+              formFieldName="ingredients"
+              options={user.ingredients}
             />
           </div>
           <div className="flex justify-end">

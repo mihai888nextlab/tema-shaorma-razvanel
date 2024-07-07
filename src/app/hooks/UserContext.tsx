@@ -9,6 +9,7 @@ import getIngredients from "../api/ingredients/getIngredients";
 import addIngredient from "../api/ingredients/addIngredient";
 import deleteIngredient from "../api/ingredients/deleteIngredient";
 import editIngredient from "../api/ingredients/editIngredient";
+import addShaworma from "../api/shaworme/addShaworma";
 
 interface ContextType {
   loading: boolean;
@@ -18,6 +19,8 @@ interface ContextType {
   addIngredient: (name: string, price: number) => Promise<void>;
   deleteIngredient: (id: string) => Promise<void>;
   editIngredient: (id: string, name: string, price: number) => Promise<void>;
+  // Comming
+  addShaworma: (name: string, ingredients: string[]) => Promise<void>;
 }
 
 const UserContext = createContext<ContextType>({} as ContextType);
@@ -31,11 +34,11 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  // ----------- INGREDIENTS ------------
+
   const getIngereientsFct = async () => {
     let ingredients = await getIngredients();
-    if (!ingredients) {
-      return;
-    }
+    if (ingredients === null) return;
     setIngredients(JSON.parse(ingredients));
   };
 
@@ -57,6 +60,15 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     await editIngredient(id, name, price);
     await getIngereientsFct();
+    setLoading(false);
+  };
+
+  // ----------- SHAWORMA ------------
+
+  const addShawormaFct = async (name: string, ingredients: string[]) => {
+    setLoading(true);
+    await addShaworma(name, ingredients);
+    //await getIngereientsFct();
     setLoading(false);
   };
 
@@ -89,6 +101,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         addIngredient: addIngredientFct,
         deleteIngredient: deleteIngredientFct,
         editIngredient: editIngredientFct,
+        addShaworma: addShawormaFct,
       }}
     >
       {children}
