@@ -11,4 +11,10 @@ interface Ingredient {
   price: number;
 }
 
-export type { User, Ingredient };
+interface Shaworma {
+  _id: string;
+  name: string;
+  ingredients: string[];
+}
+
+export type { User, Ingredient, Shaworma };

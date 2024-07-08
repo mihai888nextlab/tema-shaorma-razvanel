@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { Ingredient, User } from "../types";
+import { Ingredient, Shaworma, User } from "../types";
 import { usePathname, useRouter } from "next/navigation";
 import getUserInfo from "../api/auth/getUserInfo";
 import { set } from "mongoose";
@@ -10,16 +10,18 @@ import addIngredient from "../api/ingredients/addIngredient";
 import deleteIngredient from "../api/ingredients/deleteIngredient";
 import editIngredient from "../api/ingredients/editIngredient";
 import addShaworma from "../api/shaworme/addShaworma";
+import getShawormas from "../api/shaworme/getShaworma";
 
 interface ContextType {
   loading: boolean;
   user: User | null;
   ingredients: Ingredient[];
-  getIngredients: () => void;
+  getIngredients: () => Promise<void>;
   addIngredient: (name: string, price: number) => Promise<void>;
   deleteIngredient: (id: string) => Promise<void>;
   editIngredient: (id: string, name: string, price: number) => Promise<void>;
-  // Comming
+  shawormas: Shaworma[];
+  getShawormas: () => Promise<void>;
   addShaworma: (name: string, ingredients: string[]) => Promise<void>;
 }
 
@@ -30,6 +32,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const [ingredients, setIngredients] = useState([] as Ingredient[]);
+  const [shawormas, setShawormas] = useState([] as Shaworma[]);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -65,10 +68,16 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   // ----------- SHAWORMA ------------
 
+  const getShawormasFct = async () => {
+    let shawormas = await getShawormas();
+    if (shawormas === null) return;
+    setShawormas(JSON.parse(shawormas));
+  };
+
   const addShawormaFct = async (name: string, ingredients: string[]) => {
     setLoading(true);
     await addShaworma(name, ingredients);
-    //await getIngereientsFct();
+    await getShawormasFct();
     setLoading(false);
   };
 
@@ -89,6 +98,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
     fct();
     getIngereientsFct();
+    getShawormasFct();
   }, []);
 
   return (
@@ -101,6 +111,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         addIngredient: addIngredientFct,
         deleteIngredient: deleteIngredientFct,
         editIngredient: editIngredientFct,
+        shawormas,
+        getShawormas: getShawormasFct,
         addShaworma: addShawormaFct,
       }}
     >

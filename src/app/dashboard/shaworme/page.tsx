@@ -12,6 +12,8 @@ export default function Dashboard() {
 
   const [addShaorma, setAddShaorma] = useState(false);
 
+  let price = 0;
+
   if (user.loading) {
     return <Loading />;
   }
@@ -39,25 +41,51 @@ export default function Dashboard() {
               <thead className="bg-gray-300">
                 <tr>
                   <th className="p-3 border-2 border-r-gray-400">Nume</th>
-                  <th className="p-3 border-2 border-r-gray-400">Pret</th>
+                  <th className="p-3 border-2 border-r-gray-400">
+                    Ingrediente
+                  </th>
+                  <th className="p-3 border-2 border-r-gray-400">
+                    Pret productie
+                  </th>
+                  <th className="p-3 border-2 border-r-gray-400">
+                    Pret vanzare
+                  </th>
                   <th className="p-3">Actiuni</th>
                 </tr>
               </thead>
               <tbody>
-                {!user.ingredients.length && (
+                {!user.shawormas.length && (
                   <tr>
-                    <td colSpan={3} className="text-center">
-                      Nu exista ingrediente
+                    <td colSpan={5} className="text-center">
+                      Nu exista shaworme
                     </td>
                   </tr>
                 )}
-                {user.ingredients.map((ing, index) => (
+                {user.shawormas.map((sha, index) => (
                   <tr
                     className="bg-gray-100 hover:bg-gray-200 border-b-2"
                     key={index}
                   >
-                    <td className="text-center p-2">{ing.name}</td>
-                    <td className="text-center p-2">{ing.price}</td>
+                    <td className="text-center p-2">{sha.name}</td>
+                    <td className="text-center p-2">
+                      {sha.ingredients.map((shaIng, index) => {
+                        let ing = user.ingredients.find(
+                          (ing) => ing._id === shaIng
+                        );
+                        return ing?.name + ", ";
+                      })}
+                    </td>
+                    <td className="text-center p-2">
+                      {sha.ingredients.map((shaIng, index) => {
+                        let ing = user.ingredients.find(
+                          (ing) => ing._id === shaIng
+                        );
+
+                        price += ing?.price || 0;
+
+                        return price + " ";
+                      })}
+                    </td>
                     <td className="text-center p-2">
                       <button
                         className="px-3 py-1 bg-blue-500 text-white rounded-md"
@@ -76,7 +104,7 @@ export default function Dashboard() {
                       )} */}
                       <button
                         className="px-3 py-1 bg-red-500 text-white rounded-md ml-2"
-                        onClick={() => user.deleteIngredient(ing._id)}
+                        onClick={() => user.deleteIngredient(sha._id)}
                       >
                         Sterge
                       </button>
