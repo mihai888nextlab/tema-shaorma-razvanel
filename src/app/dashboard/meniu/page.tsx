@@ -10,6 +10,10 @@ import { useEffect, useState } from "react";
 export default function Dashboard() {
   const user = useUser();
   const [averegePrice, setAveregePrice] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredShawarmas, setFilteredShawarmas] = useState<
+    { _id: string; name: string; ingredients: string[]; price: number }[]
+  >([]);
 
   const calculateShawarmaPrice = (
     shawarma: Shaworma,
@@ -21,20 +25,54 @@ export default function Dashboard() {
     }, 0);
   };
 
+  const handleSearch = () => {
+    const query = prompt("Enter shawarma name to search:");
+    if (query !== null) {
+      setSearchQuery(query.toLowerCase());
+    }
+  };
+
   useEffect(() => {
     if (user.ingredients.length === 0) return;
+
+    const shawarmasWithPrices = user.shawormas.map((shawarma) => ({
+      ...shawarma,
+      ingredients: shawarma.ingredients.map((shaIng) => {
+        return user.ingredients.find((ing) => ing._id === shaIng)?.name || "";
+      }),
+      price: calculateShawarmaPrice(shawarma, user.ingredients),
+    }));
+
+    console.log(shawarmasWithPrices);
+
     const averegePrice = user.shawormas.reduce((total, shaworma) => {
       return total + calculateShawarmaPrice(shaworma, user.ingredients);
     }, 0);
     setAveregePrice(averegePrice / user.shawormas.length);
 
-    user.shawormas.sort((a, b) => {
+    const filteredShawarmas = shawarmasWithPrices.filter((shawarma) => {
+      const price = parseFloat(searchQuery);
+
+      const matchesName = shawarma.name.toLowerCase().includes(searchQuery);
+      const matchesIngredient = shawarma.ingredients.some(
+        (ingredient) => ingredient.toLowerCase() === searchQuery
+      );
+      const matchesPrice = !isNaN(price) && shawarma.price <= price;
+
+      return matchesName || matchesIngredient || matchesPrice;
+    });
+
+    filteredShawarmas.sort((a, b) => {
       return (
         calculateShawarmaPrice(a, user.ingredients) -
         calculateShawarmaPrice(b, user.ingredients)
       );
     });
-  }, [user.ingredients, user.shawormas]);
+
+    console.log("fill", filteredShawarmas);
+
+    setFilteredShawarmas(filteredShawarmas);
+  }, [user.ingredients, user.shawormas, searchQuery]);
 
   if (user.loading) {
     return <Loading />;
@@ -49,7 +87,7 @@ export default function Dashboard() {
           <div className="flex justify-end">
             <button
               className="px-5 py-3 rounded-xl text-white font-semibold bg-blue-500 text-xl"
-              onClick={() => prompt("Cauta shaworma")}
+              onClick={() => handleSearch()}
             >
               Cauta shaworma
             </button>
@@ -59,27 +97,21 @@ export default function Dashboard() {
               Shaworme deluxe
             </h1>
             <ul>
-              {user.shawormas.map((shaworma, index) => (
+              {filteredShawarmas.map((shaworma, index) => (
                 <div key={index}>
-                  {calculateShawarmaPrice(shaworma, user.ingredients) >
-                    averegePrice && (
+                  {shaworma.price > averegePrice && (
                     <li className="w-1/2 mb-5">
                       <div className="w-full flex justify-between text-2xl">
                         <span>{shaworma.name.toUpperCase()}</span>
                         <span className="font-bold">
-                          {calculateShawarmaPrice(shaworma, user.ingredients) *
-                            1.2}{" "}
-                          lei
+                          {shaworma.price * 1.2} lei
                         </span>
                       </div>
                       <div className="font-bold text-lg">
                         INGREDIENTE:{" "}
-                        {shaworma.ingredients.map((shaIng) => {
-                          return (
-                            user.ingredients.find((ing) => ing._id === shaIng)
-                              ?.name + ", "
-                          );
-                        })}
+                        {shaworma.ingredients.map((ing) => (
+                          <span key={ing + index}>{ing}, </span>
+                        ))}
                       </div>
                     </li>
                   )}
@@ -90,27 +122,21 @@ export default function Dashboard() {
               Shaworme saraci
             </h1>
             <ul>
-              {user.shawormas.map((shaworma, index) => (
+              {filteredShawarmas.map((shaworma, index) => (
                 <div key={index}>
-                  {calculateShawarmaPrice(shaworma, user.ingredients) <
-                    averegePrice && (
+                  {shaworma.price < averegePrice && (
                     <li className="w-1/2 mb-5">
                       <div className="w-full flex justify-between text-2xl">
                         <span>{shaworma.name.toLowerCase()}</span>
                         <span className="font-bold">
-                          {calculateShawarmaPrice(shaworma, user.ingredients) *
-                            1.2}{" "}
-                          lei
+                          {shaworma.price * 1.2} lei
                         </span>
                       </div>
                       <div className="font-bold text-lg">
                         INGREDIENTE:{" "}
-                        {shaworma.ingredients.map((shaIng) => {
-                          return (
-                            user.ingredients.find((ing) => ing._id === shaIng)
-                              ?.name + ", "
-                          );
-                        })}
+                        {shaworma.ingredients.map((ing, index) => (
+                          <span key={ing + index}>{ing}, </span>
+                        ))}
                       </div>
                     </li>
                   )}
