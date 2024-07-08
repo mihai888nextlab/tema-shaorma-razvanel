@@ -28,6 +28,9 @@ export default function DashboardSidebar() {
           <li className="font-semibold rounded-xl p-2 cursor-pointer hover:bg-gray-100">
             <a href="/dashboard/shaworme">Shaworme</a>
           </li>
+          <li className="font-semibold rounded-xl p-2 cursor-pointer hover:bg-gray-100">
+            <a href="/dashboard/meniu">Meniu</a>
+          </li>
         </ul>
       </nav>
     </aside>
