@@ -5,14 +5,24 @@ import DashboardSidebar from "@/app/components/DashboardSIdebar";
 import Loading from "@/app/components/Loading";
 import AddShawormaModal from "@/app/components/modals/AddShawormaModal";
 import { useUser } from "@/app/hooks/UserContext";
+import { Ingredient, Shaworma } from "@/app/types";
 import { useState } from "react";
 
 export default function Dashboard() {
   const user = useUser();
 
   const [addShaorma, setAddShaorma] = useState(false);
+  const [editShaworma, setEditShaworma] = useState<Shaworma | null>(null);
 
-  let price = 0;
+  const calculateShawarmaPrice = (
+    shawarma: Shaworma,
+    ingredients: Ingredient[]
+  ) => {
+    return shawarma.ingredients.reduce((total, ingredientId) => {
+      const ingredient = ingredients.find((i) => i._id === ingredientId);
+      return total + (ingredient ? ingredient.price : 0);
+    }, 0);
+  };
 
   if (user.loading) {
     return <Loading />;
@@ -33,6 +43,15 @@ export default function Dashboard() {
             </button>
             {addShaorma && (
               <AddShawormaModal close={() => setAddShaorma(false)} />
+            )}
+            {editShaworma && (
+              <AddShawormaModal
+                close={() => setEditShaworma(null)}
+                edit
+                id={editShaworma._id}
+                name={editShaworma.name}
+                ingredients={editShaworma.ingredients}
+              />
             )}
           </div>
 
@@ -72,39 +91,25 @@ export default function Dashboard() {
                         let ing = user.ingredients.find(
                           (ing) => ing._id === shaIng
                         );
-                        return ing?.name + ", ";
+                        return ing ? ing.name + ", " : "";
                       })}
                     </td>
                     <td className="text-center p-2">
-                      {sha.ingredients.map((shaIng, index) => {
-                        let ing = user.ingredients.find(
-                          (ing) => ing._id === shaIng
-                        );
-
-                        price += ing?.price || 0;
-
-                        return price + " ";
-                      })}
+                      {calculateShawarmaPrice(sha, user.ingredients)}
+                    </td>
+                    <td className="text-center p-2">
+                      {calculateShawarmaPrice(sha, user.ingredients) * 1.2}
                     </td>
                     <td className="text-center p-2">
                       <button
                         className="px-3 py-1 bg-blue-500 text-white rounded-md"
-                        // onClick={() => setEditIngredient(ing)}
+                        onClick={() => setEditShaworma(sha)}
                       >
                         Editeaza
                       </button>
-                      {/* {editIngredient && (
-                        <AddIngredientModal
-                          close={() => setEditIngredient(null)}
-                          edit
-                          id={editIngredient._id}
-                          name={editIngredient.name}
-                          price={editIngredient.price}
-                        />
-                      )} */}
                       <button
                         className="px-3 py-1 bg-red-500 text-white rounded-md ml-2"
-                        onClick={() => user.deleteIngredient(sha._id)}
+                        onClick={() => user.deleteShaworma(sha._id)}
                       >
                         Sterge
                       </button>

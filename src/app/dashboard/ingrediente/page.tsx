@@ -34,6 +34,15 @@ export default function Dashboard() {
             {addIngredient && (
               <AddIngredientModal close={() => setAddIngredient(false)} />
             )}
+            {editIngredient && (
+              <AddIngredientModal
+                close={() => setEditIngredient(null)}
+                edit
+                id={editIngredient._id}
+                name={editIngredient.name}
+                price={editIngredient.price}
+              />
+            )}
           </div>
 
           <div className="mt-10">
@@ -67,15 +76,7 @@ export default function Dashboard() {
                       >
                         Editeaza
                       </button>
-                      {editIngredient && (
-                        <AddIngredientModal
-                          close={() => setEditIngredient(null)}
-                          edit
-                          id={editIngredient._id}
-                          name={editIngredient.name}
-                          price={editIngredient.price}
-                        />
-                      )}
+
                       <button
                         className="px-3 py-1 bg-red-500 text-white rounded-md ml-2"
                         onClick={() => user.deleteIngredient(ing._id)}

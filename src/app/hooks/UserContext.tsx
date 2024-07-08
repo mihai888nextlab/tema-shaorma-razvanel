@@ -11,6 +11,8 @@ import deleteIngredient from "../api/ingredients/deleteIngredient";
 import editIngredient from "../api/ingredients/editIngredient";
 import addShaworma from "../api/shaworme/addShaworma";
 import getShawormas from "../api/shaworme/getShaworma";
+import deleteShaworma from "../api/shaworme/deleteShaworma";
+import editShaworma from "../api/shaworme/editShaworma";
 
 interface ContextType {
   loading: boolean;
@@ -23,6 +25,12 @@ interface ContextType {
   shawormas: Shaworma[];
   getShawormas: () => Promise<void>;
   addShaworma: (name: string, ingredients: string[]) => Promise<void>;
+  deleteShaworma: (id: string) => Promise<void>;
+  editShaworma: (
+    id: string,
+    name: string,
+    ingredients: string[]
+  ) => Promise<void>;
 }
 
 const UserContext = createContext<ContextType>({} as ContextType);
@@ -81,6 +89,24 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   };
 
+  const deleteShawormaFct = async (id: string) => {
+    setLoading(true);
+    await deleteShaworma(id);
+    await getShawormasFct();
+    setLoading(false);
+  };
+
+  const editShawormaFct = async (
+    id: string,
+    name: string,
+    ingredients: string[]
+  ) => {
+    setLoading(true);
+    await editShaworma(id, name, ingredients);
+    await getShawormasFct();
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (!pathname.startsWith("/dashboard")) {
       return;
@@ -114,6 +140,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         shawormas,
         getShawormas: getShawormasFct,
         addShaworma: addShawormaFct,
+        deleteShaworma: deleteShawormaFct,
+        editShaworma: editShawormaFct,
       }}
     >
       {children}

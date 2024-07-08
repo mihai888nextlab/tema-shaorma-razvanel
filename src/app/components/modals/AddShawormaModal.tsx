@@ -9,6 +9,7 @@ interface Props {
   edit?: boolean;
   id?: string;
   name?: string;
+  ingredients?: string[];
 }
 
 export default function AddShawormaModal(props: Props) {
@@ -34,7 +35,7 @@ export default function AddShawormaModal(props: Props) {
     if (!props.edit) {
       await user.addShaworma(name, ingredients as string[]);
     } else {
-      //await user.editIngredient(props.id!, name, price);
+      await user.editShaworma(props.id!, name, ingredients as string[]);
     }
 
     onCLose();
@@ -73,6 +74,7 @@ export default function AddShawormaModal(props: Props) {
             <MultiSelectDropdown
               formFieldName="ingredients"
               options={user.ingredients}
+              checkedOptions={props.ingredients}
             />
           </div>
           <div className="flex justify-end">

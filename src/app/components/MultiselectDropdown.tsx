@@ -3,9 +3,11 @@ import { Ingredient } from "../types";
 export default function MultiSelectDropdown({
   formFieldName,
   options,
+  checkedOptions,
 }: {
   formFieldName: string;
   options: Ingredient[];
+  checkedOptions?: string[];
 }) {
   return (
     <>
@@ -21,6 +23,7 @@ export default function MultiSelectDropdown({
                       name={formFieldName}
                       value={option._id}
                       className="cursor-pointer"
+                      defaultChecked={checkedOptions?.includes(option._id)}
                     />
                     <span className="ml-1">
                       {option.name}
