@@ -13,7 +13,7 @@ export default function Home() {
         </h1>
         <div className="flex flex-col items-center">
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-1/2 h-14 mb-5">
-            Intra ca si client
+            <a href="/login/client">Intra ca si client</a>
           </button>
           <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-1/2 h-14 mt-5">
             <a href="/login/bucatar">Intra ca si bucatar</a>

@@ -32,9 +32,9 @@ export default function DashboardSidebar() {
             <li className="font-semibold rounded-xl p-2 cursor-pointer hover:bg-gray-100">
               <a href="/dashboard/meniu">Meniu</a>
             </li>
-            <li className="font-semibold rounded-xl p-2 cursor-pointer hover:bg-gray-100">
+            {/* <li className="font-semibold rounded-xl p-2 cursor-pointer hover:bg-gray-100">
               <a href="/dashboard/comenzi">Comenzi</a>
-            </li>
+            </li> */}
           </ul>
         </nav>
       </aside>
