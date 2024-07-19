@@ -1,3 +1,5 @@
+import logout from "../api/auth/logout";
+
 export default function DashboardHeader() {
   return (
     <header className="w-screen border-b-2 flex justify-between items-center px-20">
@@ -5,7 +7,13 @@ export default function DashboardHeader() {
         <span className="text-red-500 font-semibold">Site</span>
         <span className="text-blue-500 font-bold">SHAWORMA</span>
       </h1>
-      <button className="bg-red-500 text-white p-5 rounded-lg h-6 flex items-center justify-center hover:outline-none hover:ring-2 hover:ring-red-300">
+      <button
+        className="bg-red-500 text-white p-5 rounded-lg h-6 flex items-center justify-center hover:outline-none hover:ring-2 hover:ring-red-300"
+        onClick={async () => {
+          await logout();
+          console.log("Logged out");
+        }}
+      >
         Logout
       </button>
     </header>

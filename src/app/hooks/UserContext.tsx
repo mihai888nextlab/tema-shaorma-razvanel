@@ -45,6 +45,15 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const getUserInfoFct = async () => {
+    let data = await getUserInfo();
+    if (!data) {
+      router.push("/");
+      return;
+    }
+    setUser(JSON.parse(data));
+  };
+
   // ----------- INGREDIENTS ------------
 
   const getIngereientsFct = async () => {
@@ -109,22 +118,21 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!pathname.startsWith("/dashboard")) {
+      console.log("not dashboard");
       return;
     }
 
     const fct = async () => {
-      let data = await getUserInfo();
-      if (!data) {
-        router.push("/");
-        return;
-      }
-      setUser(JSON.parse(data));
+      await getUserInfoFct();
+      await getIngereientsFct();
+      await getShawormasFct();
+
+      console.log("done");
+
       setLoading(false);
     };
 
     fct();
-    getIngereientsFct();
-    getShawormasFct();
   }, []);
 
   return (

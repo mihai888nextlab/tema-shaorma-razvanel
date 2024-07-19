@@ -1,9 +1,12 @@
 "use client";
 
 import loginBucatar from "@/app/api/auth/loginBucatar";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 export default function LoginBucatar() {
+  const router = useRouter();
+
   const [inp, setInp] = useState("");
   const [error, setError] = useState("");
 
@@ -11,6 +14,11 @@ export default function LoginBucatar() {
     e.preventDefault();
     const res = await loginBucatar(inp);
     setError(res ? res : "");
+
+    if (!res) {
+      router.push("/dashboard");
+      router.refresh();
+    }
   };
 
   return (

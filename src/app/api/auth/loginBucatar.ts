@@ -43,10 +43,10 @@ export default async function loginBucatar(token: string) {
     );
 
     setSession(jwtToken);
+
+    return;
   } catch (error) {
     console.error("Error: ", error);
     return "A aparut o eroare!";
   }
-
-  redirect("/dashboard");
 }
