@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+I have made a simple web app, where the cook can make a shaworma and the users can buy it. It's a simple web app made for fun, it's the first version, and i hope i can improve it in the future.
 
 ## Getting Started
 
